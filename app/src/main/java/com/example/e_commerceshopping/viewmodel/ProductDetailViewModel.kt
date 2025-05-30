@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.e_commerceshopping.data.model.Option
 import com.example.e_commerceshopping.data.model.ProductDetailResponse
-import com.example.e_commerceshopping.repository.ProductRepository
+import com.example.e_commerceshopping.data.repository.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

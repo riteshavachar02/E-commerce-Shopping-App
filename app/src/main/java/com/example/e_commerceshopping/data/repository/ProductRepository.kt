@@ -1,4 +1,4 @@
-package com.example.e_commerceshopping.repository
+package com.example.e_commerceshopping.data.repository
 
 import com.example.e_commerceshopping.data.model.ProductDetailResponse
 import com.example.e_commerceshopping.data.network.NetworkModule
