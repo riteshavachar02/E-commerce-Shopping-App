@@ -10,8 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -149,7 +148,6 @@ private fun ProductDetailContent(
     modifier: Modifier = Modifier
 ) {
     val product = uiState.product ?: return
-    val scrollState = rememberScrollState()
 
     val displayImages = when {
         !uiState.selectedColorOption?.images.isNullOrEmpty() -> uiState.selectedColorOption!!.images
@@ -164,85 +162,97 @@ private fun ProductDetailContent(
         ?.firstOrNull { it.label?.equals("Color", ignoreCase = true) == true }
         ?.options ?: emptyList()
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
     ) {
-        // Image Slider
-        if (displayImages != null) {
-            ImageSlider(
-                images = displayImages,
-                selectedIndex = uiState.selectedImageIndex,
-                onImageSelected = onImageSelected,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = product.brandName,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                Text(
-                    text = "${product.price} KWD",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(bottom = 4.dp)
+        item {
+            if (displayImages != null) {
+                ImageSlider(
+                    images = displayImages,
+                    selectedIndex = uiState.selectedImageIndex,
+                    onImageSelected = onImageSelected,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
-            Text(
-                text = product.name,
-                fontSize = 14.sp,
-                color = Color.Gray,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "SKU: ${product.name.lowercase().replace(" ", "-")}",
-                fontSize = 10.sp,
-                color = Color.Gray,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
+        }
 
-            if (colorOptions.isNotEmpty()) {
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = product.brandName,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    Text(
+                        text = "${product.price} KWD",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+
+                Text(
+                    text = product.name,
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                Text(
+                    text = "SKU: ${product.name.lowercase().replace(" ", "-")}",
+                    fontSize = 10.sp,
+                    color = Color.Gray
+                )
+            }
+        }
+
+        if (colorOptions.isNotEmpty()) {
+            item {
                 ColorSelector(
                     colorOptions = colorOptions,
                     selectedOption = uiState.selectedColorOption,
                     onColorSelected = onColorSelected,
-                    modifier = Modifier.padding(bottom = 24.dp)
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
                 )
             }
+        }
 
+        item {
             QuantitySelector(
                 quantity = uiState.quantity,
                 onQuantityChanged = { },
                 onIncrement = onQuantityIncrement,
                 onDecrement = onQuantityDecrement,
-                modifier = Modifier.padding(bottom = 32.dp)
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
             )
+        }
 
-            Spacer(modifier = Modifier.height(32.dp))
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
+        item {
             Text(
                 text = "PRODUCT INFORMATION",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
             )
+        }
 
+        // Product Description
+        item {
             val cleanDescription = Html.fromHtml(
                 product.description,
                 Html.FROM_HTML_MODE_COMPACT
@@ -252,7 +262,8 @@ private fun ProductDetailContent(
                 text = cleanDescription,
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
-                color = Color.Black.copy(alpha = 0.8f)
+                color = Color.Black.copy(alpha = 0.8f),
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
             )
         }
     }
